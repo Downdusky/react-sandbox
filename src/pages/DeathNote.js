@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
 import { snakeCase } from 'lodash'
 
 const DeathNoteContainer = styled.div`
-  margin: 50px;
+  margin: 50px 150px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
 `
 
 const NoteBook = styled.div`
@@ -16,6 +16,11 @@ const NoteBook = styled.div`
   color: white;
   padding: 200px 30px 0;
   font-size: 1.5rem;
+`
+
+const HuntingBoard = styled.div`
+  max-width: 50%;
+  flex-grow: 1;
 `
 
 const VictimList = styled.div`
@@ -29,6 +34,7 @@ const VictimContainer = styled.div`
   border-radius: 50%;
   overflow: hidden;
   position: relative;
+  flex-wrap: wrap;
 
   img {
     width: auto;
@@ -60,20 +66,20 @@ const DeathNote = () => {
   const [victims, setVictims] = useState([])
   const [draft, setDraft] = useState('')
 
-  useEffect(() => {
-    setVictims((currentVictims) => {
-      if (currentVictims.length > 2) {
-        const nextVictimIndex = Math.floor(Math.random() * currentVictims.length)
-        currentVictims[nextVictimIndex].isDead = true
-      }
-      return currentVictims
-    })
-  }, [victims])
-
-  useEffect(() => undefined, [])
+  const killRandom = () => {
+    if (victims.length >= 2) {
+      const nextVictimIndex = Math.floor(Math.random() * victims.length)
+      const updatedVictims = victims.map((victim, index) => (
+        index === nextVictimIndex ? { ...victim, isDead: true } : victim
+      ))
+      return updatedVictims
+    } else { return victims }
+  }
 
   const addVictim = () => {
-    setVictims([...victims, { name: draft, isDead: false }])
+    const updatedVictims = killRandom()
+    console.log(updatedVictims)
+    setVictims([...updatedVictims, { name: draft, isDead: false }])
     setDraft('')
   }
 
@@ -89,14 +95,14 @@ const DeathNote = () => {
         <button type="submit" onClick={addVictim}>Kill them</button>
         <button onClick={() => setVictims([])}>Reset</button>
       </NoteBook>
-      <div>
+      <HuntingBoard>
         <h2>Hunting board</h2>
         <VictimList>
           {victims.map(({ name, isDead }) => (
             <Victim name={name} isDead={isDead} key={name} />
           ))}
         </VictimList>
-      </div>
+      </HuntingBoard>
     </DeathNoteContainer>
   )
 }

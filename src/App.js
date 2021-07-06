@@ -16,7 +16,7 @@ const App = () => {
             <h1>React Sandbox</h1>
             <p>Liste des projets</p>
 
-            <a class="App-link" type="button" onClick={() => setPage('deathNote')}>
+            <a className="App-link" type="button" onClick={() => setPage('deathNote')}>
               Death Note
             </a>
           </header>
